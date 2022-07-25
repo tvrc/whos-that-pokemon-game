@@ -1,1 +1,8 @@
-<img [src]="activePokemon?.imageUrl" alt="Pokemon image">
+<div class="game-screen">
+  <div class="game-screen__debug-data">
+  </div>
+  <img class="game-screen__pokemon-image" [src]="activePokemon?.imageUrl" alt="Pokemon image">
+  <form>
+    <input [formControl]="pokemonNameControl" type="text">
+  </form>
+</div>

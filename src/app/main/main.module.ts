@@ -5,6 +5,7 @@ import { MainComponent } from './main.component';
 import { GameScreenComponent } from './game-screen/game-screen.component';
 import { MainRoutingModule } from './main-routing.module';
 import { PokemonLoaderService } from './pokemon-loader.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { PokemonLoaderService } from './pokemon-loader.service';
     MainRoutingModule,
     CommonModule,
     PokemonApiModule,
+    ReactiveFormsModule,
   ],
   exports: [
     MainComponent
