@@ -16,6 +16,9 @@ import { PokemonLoaderService } from './pokemon-loader.service';
     CommonModule,
     PokemonApiModule,
   ],
+  exports: [
+    MainComponent
+  ],
   providers: [
     PokemonLoaderService
   ]

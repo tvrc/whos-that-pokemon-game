@@ -1,6 +1,6 @@
 import { PokemonApiService } from '../pokemon-api/pokemon-api.service';
 import { Injectable } from '@angular/core';
-import { map, Observable, of, tap } from 'rxjs';
+import { forkJoin, map, Observable, of, tap } from 'rxjs';
 import { PokemonVm } from './pokemon-vm';
 import { PokemonFromApi } from '../pokemon-api/pokemon-from-api';
 
@@ -8,6 +8,12 @@ import { PokemonFromApi } from '../pokemon-api/pokemon-from-api';
 export class PokemonLoaderService {
 
   constructor(private pokemonApiService: PokemonApiService) {
+  }
+
+  getPokemons(pokemonNumbers: number[]): Observable<PokemonVm[]> {
+    const getPokemonArray$: Observable<PokemonVm>[] = [];
+    pokemonNumbers.forEach((pokemonNumber) => getPokemonArray$.push(this.getPokemon(pokemonNumber)));
+    return forkJoin(getPokemonArray$);
   }
 
   getPokemon(pokemonNumber: number): Observable<PokemonVm> {
