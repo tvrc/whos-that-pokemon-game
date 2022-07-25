@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PokemonLoaderService } from '../pokemon-loader.service';
 import { PokemonVm } from '../pokemon-vm';
+import { PokemonQueue } from '../pokemon-queue';
 
 @Component({
   selector: 'app-game-screen',
@@ -11,14 +12,20 @@ export class GameScreenComponent implements OnInit {
 
   idsOfUsedPokemon: number[] = [];
   activePokemon: PokemonVm | null = null;
+  pokemonQueue: PokemonQueue = new PokemonQueue();
 
   constructor(private pokemonLoaderService: PokemonLoaderService) { }
 
   ngOnInit(): void {
     this.pokemonLoaderService.getPokemons(this.getRandomPokemonIds(5))
       .subscribe((pokemonVms) => {
-        console.log(pokemonVms);
+        this.pokemonQueue.enqueueMany(pokemonVms);
+        this.pokemonQueue.dequeue();
       });
+
+    this.pokemonQueue.dequeue$.subscribe((pokemonVm) => {
+      this.activePokemon = pokemonVm;
+    });
   }
 
   private getRandomPokemonIds(amount: number): number[] {
