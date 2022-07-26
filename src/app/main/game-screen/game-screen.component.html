@@ -1,8 +1,12 @@
 <div class="game-screen">
-  <div class="game-screen__debug-data">
-  </div>
+  <span
+    *ngIf="secondsLeft > 0"
+    class="game-screen__timer"
+    [ngClass]="{ 'game-screen__timer--alert' : secondsLeft <= 9 }">{{ secondsLeft }}</span>
   <img class="game-screen__pokemon-image" [src]="activePokemon?.imageUrl" alt="Pokemon image">
-  <form>
-    <input [formControl]="pokemonNameControl" type="text">
+  <form class="form">
+    <input class="form__name-control"
+      type="text"
+      [formControl]="pokemonNameControl">
   </form>
 </div>

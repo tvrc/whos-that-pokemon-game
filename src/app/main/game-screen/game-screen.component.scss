@@ -2,12 +2,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  .game-screen__pokemon-image {
+  position: relative;
+
+  &__pokemon-image {
     width: 500px;
   }
-  form {
+
+  &__timer {
+    position: absolute;
+    font-size: 32px;
+    top: 10px;
+    left: 10px;
+
+    &--alert {
+      color: red;
+    }
+  }
+
+  .form {
     display: flex;
-    input {
+
+    &__name-control {
       padding: 10px;
       margin: 10px;
       width: 300px;

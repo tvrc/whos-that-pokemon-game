@@ -3,7 +3,7 @@ import { PokemonLoaderService } from '../pokemon-loader.service';
 import { PokemonVm } from '../pokemon-vm';
 import { PokemonQueue } from '../pokemon-queue';
 import { FormControl } from '@angular/forms';
-import { delay, filter, mergeMap, tap } from 'rxjs';
+import { delay, filter, finalize, mergeMap, takeWhile, tap, timer } from 'rxjs';
 
 @Component({
   selector: 'app-game-screen',
@@ -14,11 +14,12 @@ export class GameScreenComponent implements OnInit {
 
   loadedPokemonQueue: PokemonQueue = new PokemonQueue();
   idsOfLoadedPokemon: number[] = [];
-  minLoadedPokemonId = 1;
-  maxLoadedPokemonId = 16;
+  minIdOfPokemonToLoad = 1;
+  maxIdOfPokemonToLoad = 16;
   activePokemon: PokemonVm | null = null;
   allActivePokemon: PokemonVm[] = [];
   pokemonNameControl: FormControl<string | null> = new FormControl<string | null>(null);
+  secondsLeft = 20;
 
   constructor(private pokemonLoaderService: PokemonLoaderService) { }
 
@@ -31,6 +32,18 @@ export class GameScreenComponent implements OnInit {
         this.loadedPokemonQueue.enqueueMany(pokemonVms);
         this.loadedPokemonQueue.dequeue();
       });
+
+    /**
+     * Timer
+     */
+    timer(1000, 1000).pipe(
+      tap(() => --this.secondsLeft),
+      takeWhile(() => this.secondsLeft > 0),
+      finalize(() => {
+        this.pokemonNameControl.setValue(null, {emitEvent: false});
+        this.pokemonNameControl.disable({ emitEvent: false });
+      })
+    ).subscribe();
 
     /**
      * Listen to dequeue operation.
@@ -79,12 +92,12 @@ export class GameScreenComponent implements OnInit {
     let randomNumber;
     for (let i = 0; i < amount; i++) {
       do {
-        randomNumber = Math.floor(Math.random() * (this.maxLoadedPokemonId - this.minLoadedPokemonId + 1)) + this.minLoadedPokemonId;
+        randomNumber = Math.floor(Math.random() * (this.maxIdOfPokemonToLoad - this.minIdOfPokemonToLoad + 1)) + this.minIdOfPokemonToLoad;
       } while(this.idsOfLoadedPokemon.includes(randomNumber))
-      if (randomNumber === this.minLoadedPokemonId) {
-        this.minLoadedPokemonId = randomNumber + 1;
-      } else if (randomNumber === this.maxLoadedPokemonId) {
-        this.maxLoadedPokemonId = randomNumber - 1;
+      if (randomNumber === this.minIdOfPokemonToLoad) {
+        this.minIdOfPokemonToLoad = randomNumber + 1;
+      } else if (randomNumber === this.maxIdOfPokemonToLoad) {
+        this.maxIdOfPokemonToLoad = randomNumber - 1;
       }
       randomPokemonIds.push(randomNumber);
       this.idsOfLoadedPokemon.push(randomNumber);
